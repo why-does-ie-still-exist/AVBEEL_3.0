@@ -2,11 +2,12 @@ package com.company;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Duck {
 
-    public final Class<?> notADuckType;
-    public final Object notADuck;
+    public Class<?> notADuckType;
+    public Object notADuck;
     private Method applydel;
     private boolean simple;
     private Method valuedel;
@@ -22,6 +23,9 @@ public class Duck {
         this.notADuck = notADuck;
         this.notADuckType = notADuck.getClass();
         initialize();
+    }
+
+    public Duck(){
     }
 
     public boolean getIgnoreFirstPass() {
@@ -71,7 +75,7 @@ public class Duck {
     }
 
     public Object value() {
-        if(this.valuedel == null) return this.notADuckType.getName();
+        if(this.valuedel == null) return this.notADuckType.getName() + "@" + UUID.randomUUID();
         try {
             return this.valuedel.invoke(this.notADuck);
         } catch (Exception e) {

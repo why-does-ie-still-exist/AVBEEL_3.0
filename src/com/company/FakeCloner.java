@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class FakeCloner {
@@ -15,7 +16,8 @@ public class FakeCloner {
     public static FakeCloneException exampleFailure;
 
     public static Object fakeClone(Object o) throws FakeCloneException {
-        if (isBoxed(o) || isString(o)) return o;
+        if (o == null) return null;
+        if (isBoxed(o) || isString(o) || isSpecialCase(o)) return o;
         Constructor emptyconst = null;
         if (o instanceof Collection) {
             collectionCloneFailed = false;
@@ -33,15 +35,15 @@ public class FakeCloner {
         if (o instanceof Duck) {
             return new Duck((fakeClone(((Duck) o).notADuck)));
         }
-        Hashtable<Field, Object> props = stealprops(o);
+        HashMap<Field, Object> props = stealprops(o);
         if (isImmutable(props, o.getClass().getName())) return o;
         if (emptyconst == null) emptyconst = getEmptyConstructor(o);
         return forceProps(props, emptyconst);
 
     }
 
-    public static Hashtable<Field, Object> stealprops(Object obj) throws FakeCloneException {
-        var values = new Hashtable<Field, Object>();
+    public static HashMap<Field, Object> stealprops(Object obj) throws FakeCloneException {
+        var values = new HashMap<Field, Object>();
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field f : fields) {
             f.setAccessible(true);
@@ -54,7 +56,7 @@ public class FakeCloner {
         return values;
     }
 
-    public static Object forceProps(Hashtable<Field, Object> fieldvals, Constructor maker) throws FakeCloneException {
+    public static Object forceProps(HashMap<Field, Object> fieldvals, Constructor maker) throws FakeCloneException {
         Object clone = null;
         try {
             clone = maker.newInstance();
@@ -94,11 +96,15 @@ public class FakeCloner {
                 || obj instanceof Short || obj instanceof Double;
     }
 
+    public static boolean isSpecialCase(Object obj) {
+        return obj instanceof Pattern;
+    }
+
     public static boolean isString(Object obj) {
         return obj instanceof String;
     }
 
-    public static boolean isImmutable(Hashtable<Field, Object> fieldValues, String classPath) {
+    public static boolean isImmutable(HashMap<Field, Object> fieldValues, String classPath) {
         if (knownImmutables.contains(classPath)) return true;
         var isImmutable = true;
         Set<Field> fields = fieldValues.keySet();

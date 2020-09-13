@@ -1,5 +1,6 @@
-package com.company;
+package com.company.SpecialDucks;
 
+import com.company.*;
 import com.company.Ducks.DuckBool;
 
 import java.util.ArrayList;
@@ -20,22 +21,31 @@ public class IfDuck {
         this.body = matcher.group(2);
     }
 
+    public IfDuck(){
+        this.condition = null;
+        this.body = null;
+    }
+
     private void initialize(){
         this.initialized = true;
-        this.parsedcond = Lexer.staticParse(condition);
-        this.parsedbody = Lexer.staticParse(body);
+        this.parsedcond = Lexer.staticParse(condition, Main.identifiers);
+        this.parsedbody = Lexer.staticParse(body, Main.identifiers);
     }
 
     public ArrayList<Duck> simpleapply(ArrayList<Duck> input) throws FakeCloneException {
         if( ! this.initialized) initialize();
         input.remove(0);
         if(evaluateCond()) {
-            input.addAll(0, Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(parsedbody)));
+            ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedbody);
+            workspace = IdentifierUtil.resolveIdentifiers(workspace);
+            input.addAll(0, Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(workspace)));
         }
         return input;
     }
     private boolean evaluateCond() throws FakeCloneException {
-        ArrayList<Duck> clones = Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(parsedcond));
+        ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedcond);
+        workspace = IdentifierUtil.resolveIdentifiers(workspace);
+        ArrayList<Duck> clones = Interpreter.interpret(workspace);
         Duck first = clones.get(0);
         if(first.notADuck instanceof DuckBool){
             return (boolean) first.value();

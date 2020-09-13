@@ -1,8 +1,8 @@
 package com.company.Lexicons;
 
 import com.company.Duck;
-import com.company.FunctionDuck;
-import com.company.IfDuck;
+import com.company.SpecialDucks.FunctionDuck;
+import com.company.SpecialDucks.IfDuck;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 

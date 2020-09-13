@@ -1,5 +1,6 @@
 package com.company;
 
+import com.company.Ducks.IdentifierDuck;
 import com.company.Lexicons.AlphaSpecialLexicon;
 import com.company.Lexicons.DigitLexicon;
 import com.company.Lexicons.GlobalDefLexicon;
@@ -16,6 +17,7 @@ public class Main {
     public static GlobalDefLexicon[] globaldefstore = GlobalDefLexicon.values();
     public static TokenPatternLexicon[] globaltokenpatterns = TokenPatternLexicon.values();
     public static HashMap<String, Duck> globaldefs = new HashMap<String, Duck>();
+    public static HashMap<String, Duck> identifiers = new HashMap<String, Duck>();
 
     public static void main(String[] args) {
         FakeCloner.disableWarning();
@@ -37,7 +39,7 @@ public class Main {
                     running = false;
                     break;
                 case "reset":
-                    clearFunctions();
+                    reset();
                     break;
                 default:
                     try {
@@ -56,7 +58,7 @@ public class Main {
         }
     }
 
-    public static void clearFunctions() {
+    public static void reset() {
         globaldefs.clear();
     }
 

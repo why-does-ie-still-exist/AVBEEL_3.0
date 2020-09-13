@@ -16,6 +16,10 @@ public class DuckBool {
         }
     }
 
+    public DuckBool(boolean aBoolean) {
+        this.aBoolean = aBoolean;
+    }
+
     public Pair<ArrayList<Duck>, Integer> apply(ArrayList<Duck> ducks, Integer pos) {
         return new Pair<ArrayList<Duck>, Integer>(ducks, pos);
     }

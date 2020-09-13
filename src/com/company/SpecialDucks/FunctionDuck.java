@@ -1,11 +1,13 @@
-package com.company;
+package com.company.SpecialDucks;
 
+import com.company.*;
 import com.company.Ducks.IdentifierDuck;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static com.company.FakeCloner.fakeClone;
@@ -31,46 +33,33 @@ public class FunctionDuck {
         this.numargs = this.strarguments.size();
     }
 
-    private void initialize(){
-        this.isInitialized = true;
-        this.parsedbody = Lexer.staticParse(this.strtoeval, getArguments());
+    public FunctionDuck(){
     }
 
-    public HashMap<String, Duck> getArguments() {
-        var lex = new HashMap<String, Duck>();
-        Duck duck;
+    private void initialize(){
+        this.isInitialized = true;
+        Duck idduck;
         for (String arg :
                 this.strarguments) {
-            duck = new Duck(new IdentifierDuck(arg));
-            lex.put(arg, duck);
+            idduck = new Duck(new IdentifierDuck(arg));
+            Main.identifiers.put(arg,idduck);
         }
-        return lex;
+        this.parsedbody = Lexer.staticParse(this.strtoeval, Main.identifiers);
     }
 
     public ArrayList<Duck> simpleapply(ArrayList<Duck> input) throws FakeCloneException {
         if(! this.isInitialized) initialize();
+
+        //could take into consideration whether functions in body are already defined so it doesn't re-run the definition.
         input.remove(0);
-        HashMap<String, Duck> argvalues = new HashMap<String, Duck>();
         for (int i = 0; i < numargs; i++) {
-            argvalues.put(strarguments.get(i), input.get(i));
+            ((IdentifierDuck) Main.identifiers.get((strarguments.get(i))).notADuck).set(input.get(i));
         }
         for (int i = 0; i < numargs; i++) {
             input.remove(0);
         }
         var workspace = new ArrayList<Duck>((Collection) fakeClone(this.parsedbody));
-        Duck value;
-        String id;
-        for (int i = 0; i < workspace.size(); i++) {
-            value = workspace.get(i);
-            if (value.notADuck instanceof IdentifierDuck) {
-                id = (String) value.value();
-                if (argvalues.containsKey(id)) {
-                    workspace.remove(i);
-                    workspace.add(i, argvalues.get(id));
-                }
-            }
-        }
-        workspace = Interpreter.interpret(workspace);
+        workspace = Interpreter.interpret(IdentifierUtil.resolveIdentifiers(workspace));
         input.addAll(0, workspace);
         return input;
     }
