@@ -3,7 +3,7 @@
 The next iteration of **<ins>A</ins> <ins>V</ins>ery <ins>B</ins>ad <ins>E</ins>asily <ins>E</ins>xtensible <ins>L</ins>anguage**!
 
 With new fetaures such as:
-- Using metaprogrmaming so you don't have to implement a thousand interfaces to create a language feature
+- Using metaprogramming so you don't have to implement a thousand interfaces to create a language feature
 - Manageable Complexity!
 - Control flow!
 - Boolean logic!
