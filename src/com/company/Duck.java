@@ -11,7 +11,6 @@ public class Duck {
     private Method applydel;
     private boolean simple;
     private Method valuedel;
-    private boolean ignoreFirstPass;
 
     public Duck(Object notADuck) {
         this.notADuck = notADuck;
@@ -19,22 +18,9 @@ public class Duck {
         initialize();
     }
 
-    public Duck(Object notADuck, boolean ignoreFirstPass) {
-        this.notADuck = notADuck;
-        this.notADuckType = notADuck.getClass();
-        initialize();
+    public Duck() {
     }
 
-    public Duck(){
-    }
-
-    public boolean getIgnoreFirstPass() {
-        return ignoreFirstPass;
-    }
-
-    public void setIgnoreFirstPass(boolean ignorefirstpass) {
-        this.ignoreFirstPass = ignorefirstpass;
-    }
 
     private void initialize() {
         this.simple = false;
@@ -75,7 +61,7 @@ public class Duck {
     }
 
     public Object value() {
-        if(this.valuedel == null) return this.notADuckType.getName() + "@" + UUID.randomUUID();
+        if (this.valuedel == null) return this.notADuckType.getName() + "@" + UUID.randomUUID();
         try {
             return this.valuedel.invoke(this.notADuck);
         } catch (Exception e) {

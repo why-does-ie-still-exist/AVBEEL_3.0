@@ -11,7 +11,7 @@ public class NotDuck {
     public ArrayList<Duck> simpleapply(ArrayList<Duck> ducks) {
         if (ducks.size() >= 2) {
             var first = (boolean) ducks.get(1).value();
-            ducks.set(0, new Duck(new DuckBool(first ? false : true)));
+            ducks.set(0, new Duck(new DuckBool(!first)));
             ducks.remove(1);
             return ducks;
         }

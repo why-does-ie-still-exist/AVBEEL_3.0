@@ -9,11 +9,7 @@ public class DuckBool {
     private final boolean aBoolean;
 
     public DuckBool(String sBoolean) {
-        if(sBoolean.equals("true")){
-            aBoolean = true;
-        } else {
-            aBoolean = false;
-        }
+        aBoolean = sBoolean.equals("true");
     }
 
     public DuckBool(boolean aBoolean) {

@@ -14,10 +14,11 @@ public enum AlphaSpecialLexicon {
     ),
     IntegerDiv(new String[]{"/", "divide"}, (String s) -> (new Duck(new Divide()))
     ),
-    Boolean(new String[]{"true","false"}, (String s)-> (new Duck(new DuckBool(s)))),
+    Boolean(new String[]{"true", "false"}, (String s) -> (new Duck(new DuckBool(s)))),
     Display(new String[]{"display"}, (String s) -> (new Duck(new DisplayDuck()))),
-    Equals(new String[]{"==","=","eq","equals"}, (String s) -> (new Duck(new EqualityDuck()))),
-    Not(new String[]{"!","not"}, (String s) -> (new Duck(new NotDuck())));
+    Equals(new String[]{"==", "=", "eq", "equals"}, (String s) -> (new Duck(new EqualityDuck()))),
+    Not(new String[]{"!", "not"}, (String s) -> (new Duck(new NotDuck()))),
+    Comparator(new String[]{">", "<"}, (String s) -> new Duck(new DuckComparator(s.equals(">"))));
 
     private final String[] names;
     private final Function<String, Duck> converter;

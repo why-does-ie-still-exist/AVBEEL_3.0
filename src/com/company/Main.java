@@ -1,6 +1,5 @@
 package com.company;
 
-import com.company.Ducks.IdentifierDuck;
 import com.company.Lexicons.AlphaSpecialLexicon;
 import com.company.Lexicons.DigitLexicon;
 import com.company.Lexicons.GlobalDefLexicon;
@@ -31,6 +30,8 @@ public class Main {
         Lexer l = new Lexer();
         var running = true;
         Scanner scanner = new Scanner(System.in);
+        long starttime;
+        long endtime;
         while (running) {
             System.out.print("Enter Code: ");
             String input = scanner.nextLine();
@@ -43,7 +44,10 @@ public class Main {
                     break;
                 default:
                     try {
+                        starttime = System.nanoTime();
                         String output = Interpreter.stringify(Interpreter.interpret(Lexer.staticParse(input)));
+                        endtime = System.nanoTime();
+                        System.out.println("Time: >" + ((endtime - starttime) / 1000000) + "ms");
                         System.out.print("Result: ");
                         System.out.println(output);
                     } catch (Exception e) {
@@ -60,6 +64,7 @@ public class Main {
 
     public static void reset() {
         globaldefs.clear();
+        identifiers.clear();
     }
 
     private static void lexerInitialize() {

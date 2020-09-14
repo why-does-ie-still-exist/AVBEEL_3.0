@@ -6,37 +6,46 @@ import com.company.Ducks.DuckBool;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class IfDuck {
-    public final Pattern pattern = Pattern.compile("if[\\s]+[(]([^()]+)[)][\\s]+[(]([^()]+)[)]");
+public class IfElseDuck {
+    public final Pattern pattern = Pattern.compile("if[\\s]+[(]([^()]+)[)][\\s]+[(]([^()]+)[)][\\s]+else[\\s]+[(]([^()]+)[)]");
     private final String condition;
-    private final String body;
+    private final String truebody;
+    private final String falsebody;
     private ArrayList<Duck> parsedcond;
-    private ArrayList<Duck> parsedbody;
+    private ArrayList<Duck> parsedtruebody;
+    private ArrayList<Duck> parsedfalsebody;
     private boolean initialized = false;
 
-    public IfDuck(String definition) {
+    public IfElseDuck(String definition) {
         var matcher = this.pattern.matcher(definition);
         matcher.matches();
         this.condition = matcher.group(1);
-        this.body = matcher.group(2);
+        this.truebody = matcher.group(2);
+        this.falsebody = matcher.group(3);
     }
 
-    public IfDuck() {
+    public IfElseDuck() {
         this.condition = null;
-        this.body = null;
+        this.truebody = null;
+        this.falsebody = null;
     }
 
     private void initialize() {
         this.initialized = true;
         this.parsedcond = Lexer.staticParse(condition, Main.identifiers);
-        this.parsedbody = Lexer.staticParse(body, Main.identifiers);
+        this.parsedtruebody = Lexer.staticParse(truebody, Main.identifiers);
+        this.parsedfalsebody = Lexer.staticParse(falsebody, Main.identifiers);
     }
 
     public ArrayList<Duck> simpleapply(ArrayList<Duck> input) throws FakeCloneException {
         if (!this.initialized) initialize();
         input.remove(0);
         if (evaluateCond()) {
-            ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedbody);
+            ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedtruebody);
+            workspace = IdentifierUtil.resolveIdentifiers(workspace);
+            input.addAll(0, Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(workspace)));
+        } else {
+            ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedfalsebody);
             workspace = IdentifierUtil.resolveIdentifiers(workspace);
             input.addAll(0, Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(workspace)));
         }

@@ -27,11 +27,6 @@ public class Lexer {
     }
 
     private static Duck tokenize(String s, HashMap<String, Duck> staticcustomstore, boolean staticiscustomstore) {
-        boolean ignore = false;
-        if (s.charAt(0) == '\'') {
-            ignore = true;
-            s = s.substring(1);
-        }
         Function converter = null;
         if (Character.isDigit(s.charAt(0))) {
             converter = globaldigitstore.get(s);
@@ -55,7 +50,6 @@ public class Lexer {
         if (staticiscustomstore && converter == null) {
             var custom = staticcustomstore.get(s);
             if (custom != null) {
-                custom.setIgnoreFirstPass(ignore);
                 return custom;
             }
         }
@@ -63,7 +57,6 @@ public class Lexer {
             throw new IllegalArgumentException(new StringBuilder("token s does not exist in lexicons: ").append(s).toString());
         }
         Duck convertedDuck = ((Duck) converter.apply(s));
-        convertedDuck.setIgnoreFirstPass(ignore);
         return convertedDuck;
     }
 
@@ -72,8 +65,8 @@ public class Lexer {
         var namestofuncs = new HashMap<String, Duck>();
         boolean foundAny = false;
         boolean firstPass = true;
-        while(foundAny || firstPass) {
-            if(firstPass) firstPass = false;
+        while (foundAny || firstPass) {
+            if (firstPass) firstPass = false;
             foundAny = false;
             for (var store : globaldefstore) {
                 Matcher m = store.getPattern().matcher(string);

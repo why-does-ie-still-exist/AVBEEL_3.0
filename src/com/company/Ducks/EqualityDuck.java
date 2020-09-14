@@ -12,7 +12,7 @@ public class EqualityDuck {
         if (ducks.size() >= 3) {
             var first = ducks.get(1).value();
             var second = ducks.get(2).value();
-            if(first.equals(second)){
+            if (first.equals(second)) {
                 ducks.set(0, new Duck(new DuckBool(true)));
             } else {
                 ducks.set(0, new Duck(new DuckBool(false)));
