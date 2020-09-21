@@ -5,8 +5,11 @@ import com.company.Lexicons.DigitLexicon;
 import com.company.Lexicons.GlobalDefLexicon;
 import com.company.Lexicons.TokenPatternLexicon;
 
-import java.util.HashMap;
-import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.function.Function;
 
 public class Main {
@@ -17,49 +20,107 @@ public class Main {
     public static TokenPatternLexicon[] globaltokenpatterns = TokenPatternLexicon.values();
     public static HashMap<String, Duck> globaldefs = new HashMap<String, Duck>();
     public static HashMap<String, Duck> identifiers = new HashMap<String, Duck>();
+    public static Scanner bigscanner = new Scanner(System.in);
+    public static boolean replisrunning;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         FakeCloner.disableWarning();
         lexerInitialize();
-        doREPL();
+        if (args.length == 0) {
+            doREPL();
+        } else {
+            var working = new ArrayList<Duck>();
+            try {
+                for (Map.Entry<int[], String> entry : splitfile(args[0]).entrySet()) {
+                    try {
+                        working = Interpreter.interpret(Lexer.staticParse(entry.getValue()));
+                    } catch (Exception e) {
+                        System.out.println("Error at lines: " + entry.getKey()[0] + " to " + entry.getKey()[1]);
+                        e.printStackTrace();
+                        break;
+                    }
+                }
+                System.out.println(Interpreter.stringify(working));
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("IO error with file: " + args[0]);
+            }
+        }
     }
 
     public static void doREPL() {
         System.out.println("AVBEEL 3.0 REPL");
         System.out.println("Type \"exit\" to quit or \"reset\" to clear functions");
         Lexer l = new Lexer();
-        var running = true;
-        Scanner scanner = new Scanner(System.in);
+        replisrunning = true;
+        while (replisrunning) {
+            doReplOnce(true);
+        }
+    }
+
+    public static ArrayList<Duck> doReplOnce(boolean doesoutput) {
         long starttime;
         long endtime;
-        while (running) {
-            System.out.print("Enter Code: ");
-            String input = scanner.nextLine();
-            switch (input.toLowerCase()) {
-                case "exit":
-                    running = false;
-                    break;
-                case "reset":
-                    reset();
-                    break;
-                default:
-                    try {
-                        starttime = System.nanoTime();
-                        String output = Interpreter.stringify(Interpreter.interpret(Lexer.staticParse(input)));
+        ArrayList<Duck> evaluated = null;
+        System.out.print("Enter Code: ");
+        String input = bigscanner.nextLine();
+        switch (input.toLowerCase()) {
+            case "exit":
+                replisrunning = false;
+                break;
+            case "reset":
+                reset();
+                break;
+            default:
+                try {
+                    starttime = System.nanoTime();
+                    evaluated = Interpreter.interpret(Lexer.staticParse(input));
+                    if (doesoutput) {
+                        String output = Interpreter.stringify(evaluated);
                         endtime = System.nanoTime();
                         System.out.println("Time: >" + ((endtime - starttime) / 1000000) + "ms");
                         System.out.print("Result: ");
                         System.out.println(output);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException interruptedException) {
-                            interruptedException.printStackTrace();
-                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                }
+        }
+        return (evaluated == null) ? new ArrayList<Duck>() : evaluated;
+    }
+
+    public static LinkedHashMap<int[], String> splitfile(String couldbepath) throws IOException {
+        Path p = Paths.get(couldbepath);
+        var f = new File(p.toRealPath().toUri());
+        var s = new Scanner(f);
+        var map = new LinkedHashMap<int[], String>();
+        var currenttext = new StringBuilder();
+        String currentline = "";
+        int currentlineno = 0;
+        int startline = 1;
+        int endline = 0;
+        while (s.hasNext()) {
+            currentlineno++;
+            currentline = s.nextLine();
+            if (currentline.contains(";")) {
+                endline = currentlineno;
+                map.put(new int[]{startline, endline}, currenttext.toString() + currentline.split(";")[0]);
+                startline = currentlineno + 1;
+                currenttext = new StringBuilder();
+            } else {
+                currenttext.append(currentline).append("\n");
             }
         }
+        if (!currenttext.toString().isBlank()) {
+            endline = currentlineno;
+            map.put(new int[]{startline, endline}, currenttext.toString());
+        }
+        return map;
     }
 
     public static void reset() {

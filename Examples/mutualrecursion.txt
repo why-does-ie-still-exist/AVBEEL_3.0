@@ -1,0 +1,21 @@
+define isEven (n)
+        (ifl (= n 0) (true) else (isOdd - n 1));
+
+define isOdd (n)
+        (ifl (= n 0) (false) else (isEven - n 1));
+
+display isEven 73;
+
+display isOdd 73;
+
+define actualfibonacci (back2 back1 iterations)
+        (ifl (= iterations 0) (back1) else (actualfibonacci back1 + back2 back1 - iterations 1));
+
+define fibargs (n) (1 1 - n 2);
+
+define fibonacci (n) (ifl (< n 3) (1) else ( actualfibonacci fibargs n));
+
+display fibonacci 2;
+
+display fibonacci 8
+

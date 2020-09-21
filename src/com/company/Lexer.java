@@ -65,7 +65,7 @@ public class Lexer {
         var namestofuncs = new HashMap<String, Duck>();
         boolean foundAny = false;
         boolean firstPass = true;
-        while (foundAny || firstPass) {
+        while (foundAny || firstPass) { //could just pass what stores I haven't already iterated over and process string and then recur.
             if (firstPass) firstPass = false;
             foundAny = false;
             for (var store : globaldefstore) {
@@ -76,7 +76,7 @@ public class Lexer {
                 int end;
                 String sstr;
                 String name;
-                for (Object o : m.results().toArray()) {
+                for (Object o : m.results().toArray()) { //redo this logic with matcher replace method
                     foundAny = true;
                     start = ((MatchResult) o).start();
                     end = ((MatchResult) o).end();

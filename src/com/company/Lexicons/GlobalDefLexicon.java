@@ -1,21 +1,22 @@
 package com.company.Lexicons;
 
 import com.company.Duck;
-import com.company.SpecialDucks.FunctionDuck;
-import com.company.SpecialDucks.IfDuck;
-import com.company.SpecialDucks.IfElseDuck;
-import com.company.SpecialDucks.SetDuck;
+import com.company.SpecialDucks.*;
 
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public enum GlobalDefLexicon {
-    DefineStatement(Pattern.compile("define\\s+[^\\s()]+\\s+[(][^()]*[)]\\s+[(][^()]*[)]"), //TODO: remove capturing groups
+    DefineStatement(Pattern.compile("define[\\s]+[^\\s()]+[\\s]+[(][^()]*[)][\\s]+[(][^()]*[)]"),
             s -> new Duck(new FunctionDuck(s)), false),
-    IfStatement(Pattern.compile("if[\\s]+[(][^()]+[)][\\s]+[(][^()]+[)](?:[\\s]+else[\\s]+[(][^()]+[)])?"),
-            s -> new Duck(s.matches(".*\\selse\\s.*") ? new IfElseDuck(s) : new IfDuck(s)), true),
+    IfElseStatement(Pattern.compile("ifl[\\s]+[(][^()]+[)][\\s]+[(][^()]+[)][\\s]+else[\\s]+[(][^()]+[)]"),
+            s -> new Duck(new IfElseDuck(s)), true),
+    IfStatement(Pattern.compile("if[\\s]+[(][^()]+[)][\\s]+[(][^()]+[)]"),
+            s -> new Duck(new IfDuck(s)), true),
     SetDuck(Pattern.compile("set\\s+[^\\s()]+\\s+[(][^()]*[)]"),
-            s -> new Duck(new SetDuck(s)), false);
+            s -> new Duck(new SetDuck(s)), false),
+    FinalDuck(Pattern.compile("final\\s+[^\\s()]+\\s+[(][^()]*[)]"),
+    s -> new Duck(new FinalDuck(s)), false);
 
     private final Pattern pattern;
     private final Function<String, Duck> initializer;

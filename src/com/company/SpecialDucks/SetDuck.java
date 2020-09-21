@@ -27,7 +27,7 @@ public class SetDuck {
         this.parsedbody = Lexer.staticParse(this.strtoeval, Main.identifiers);
     }
 
-    public ArrayList<Duck> simpleapply(ArrayList<Duck> input) throws FakeCloneException {
+    public ArrayList<Duck> simpleapply(ArrayList<Duck> input) {
         if (!this.isInitialized) initialize();
         input.remove(0);
         var workspace = new ArrayList<Duck>(this.parsedbody);

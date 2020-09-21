@@ -18,7 +18,8 @@ public enum AlphaSpecialLexicon {
     Display(new String[]{"display"}, (String s) -> (new Duck(new DisplayDuck()))),
     Equals(new String[]{"==", "=", "eq", "equals"}, (String s) -> (new Duck(new EqualityDuck()))),
     Not(new String[]{"!", "not"}, (String s) -> (new Duck(new NotDuck()))),
-    Comparator(new String[]{">", "<"}, (String s) -> new Duck(new DuckComparator(s.equals(">"))));
+    Comparator(new String[]{">", "<"}, (String s) -> new Duck(new DuckComparator(s.equals(">")))),
+    REPL(new String[]{"replinput"}, (String s) -> new Duck(new REPLDuck()));
 
     private final String[] names;
     private final Function<String, Duck> converter;

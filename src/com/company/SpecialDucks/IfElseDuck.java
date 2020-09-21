@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class IfElseDuck {
-    public final Pattern pattern = Pattern.compile("if[\\s]+[(]([^()]+)[)][\\s]+[(]([^()]+)[)][\\s]+else[\\s]+[(]([^()]+)[)]");
+    public final Pattern pattern = Pattern.compile("ifl[\\s]+[(]([^()]+)[)][\\s]+[(]([^()]+)[)][\\s]+else[\\s]+[(]([^()]+)[)]");
     private final String condition;
     private final String truebody;
     private final String falsebody;
