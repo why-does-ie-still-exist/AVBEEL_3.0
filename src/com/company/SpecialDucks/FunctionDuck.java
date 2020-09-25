@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
-import static com.company.FakeCloner.fakeClone;
+import static com.company.FakeCloner.maybeFakeClone;
 
 public class FunctionDuck {
     public final Pattern pattern = Pattern.compile("define\\s+([^\\s()]+)\\s+[(]([^()]*)[)]\\s+[(]([^()]*)[)]");
@@ -54,7 +54,7 @@ public class FunctionDuck {
         for (int i = 0; i < numargs; i++) {
             input.remove(0);
         }
-        var workspace = new ArrayList<Duck>((Collection) fakeClone(this.parsedbody));
+        var workspace = new ArrayList<Duck>(maybeFakeClone(this.parsedbody));
         workspace = Interpreter.interpret(IdentifierUtil.resolveIdentifiers(workspace));
         input.addAll(0, workspace);
         return input;

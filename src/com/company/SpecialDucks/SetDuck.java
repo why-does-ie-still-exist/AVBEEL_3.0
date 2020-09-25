@@ -5,6 +5,8 @@ import com.company.*;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import static com.company.FakeCloner.maybeFakeClone;
+
 public class SetDuck {
     public final Pattern pattern = Pattern.compile("set\\s+([^\\s()]+)\\s+[(]([^()]*)[)]");
     private String strtoeval;
@@ -27,10 +29,10 @@ public class SetDuck {
         this.parsedbody = Lexer.staticParse(this.strtoeval, Main.identifiers);
     }
 
-    public ArrayList<Duck> simpleapply(ArrayList<Duck> input) {
+    public ArrayList<Duck> simpleapply(ArrayList<Duck> input) throws FakeCloneException {
         if (!this.isInitialized) initialize();
         input.remove(0);
-        var workspace = new ArrayList<Duck>(this.parsedbody);
+        var workspace = new ArrayList<Duck>(maybeFakeClone(this.parsedbody));
         workspace = Interpreter.interpret(IdentifierUtil.resolveIdentifiers(workspace));
         input.addAll(0, workspace);
         return input;

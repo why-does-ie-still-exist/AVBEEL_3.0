@@ -1,24 +1,31 @@
 package com.company;
 
+import com.company.SpecialDucks.MaybeCloneDuck;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class Duck {
 
-    public Class<?> notADuckType;
-    public Object notADuck;
+    public final Class<?> notADuckType;
+    public final Object notADuck;
     private Method applydel;
     private boolean simple;
     private Method valuedel;
+    public final boolean isCloneIdentifier;
 
     public Duck(Object notADuck) {
+        this.isCloneIdentifier = notADuck instanceof MaybeCloneDuck;
         this.notADuck = notADuck;
         this.notADuckType = notADuck.getClass();
         initialize();
     }
 
     public Duck() {
+        this.isCloneIdentifier = false;
+        this.notADuck = null;
+        this.notADuckType = null;
     }
 
 

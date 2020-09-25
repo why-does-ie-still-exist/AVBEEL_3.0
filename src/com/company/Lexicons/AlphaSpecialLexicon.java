@@ -2,6 +2,7 @@ package com.company.Lexicons;
 
 import com.company.Duck;
 import com.company.Ducks.*;
+import com.company.SpecialDucks.MaybeCloneDuck;
 
 import java.util.function.Function;
 
@@ -18,8 +19,10 @@ public enum AlphaSpecialLexicon {
     Display(new String[]{"display"}, (String s) -> (new Duck(new DisplayDuck()))),
     Equals(new String[]{"==", "=", "eq", "equals"}, (String s) -> (new Duck(new EqualityDuck()))),
     Not(new String[]{"!", "not"}, (String s) -> (new Duck(new NotDuck()))),
+    Or(new String[]{"or","||"},(String s) -> new Duck(new OrDuck())),
     Comparator(new String[]{">", "<"}, (String s) -> new Duck(new DuckComparator(s.equals(">")))),
-    REPL(new String[]{"replinput"}, (String s) -> new Duck(new REPLDuck()));
+    REPL(new String[]{"replinput"}, (String s) -> new Duck(new REPLDuck())),
+    CloneIdentifier(new String[]{"clone","doclone"}, s -> new Duck(new MaybeCloneDuck()));
 
     private final String[] names;
     private final Function<String, Duck> converter;

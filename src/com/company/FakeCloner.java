@@ -15,7 +15,30 @@ public class FakeCloner {
     public static boolean collectionCloneFailed = false;
     public static FakeCloneException exampleFailure;
 
-    public static Object fakeClone(Object o) throws FakeCloneException {
+    @SuppressWarnings("unchecked")
+    public static ArrayList<Duck> maybeFakeClone(ArrayList<Duck> ducks) throws FakeCloneException {
+        boolean found = false;
+        for(int i = 0; i < ducks.size(); i++){
+            if(ducks.get(i).isCloneIdentifier){
+                found = true;
+                ducks.remove(i);
+            }
+        }
+        if(! found) return ducks;
+        collectionCloneFailed = false;
+        Constructor emptyconst = getEmptyConstructor(ducks);
+        return (ArrayList<Duck>) collectionSafeReplace((Collection) ducks, o1 -> {
+            try {
+                return maybeFakeClone(o1);
+            } catch (FakeCloneException e) {
+                exampleFailure = e;
+                collectionCloneFailed = true;
+            }
+            return null;
+        }, emptyconst);
+    }
+
+    public static Object maybeFakeClone(Object o) throws FakeCloneException {
         if (o == null) return null;
         if (isBoxed(o) || isString(o) || isSpecialCase(o)) return o;
         Constructor emptyconst = null;
@@ -24,7 +47,7 @@ public class FakeCloner {
             emptyconst = getEmptyConstructor(o);
             return collectionSafeReplace((Collection) o, o1 -> {
                 try {
-                    return fakeClone(o1);
+                    return maybeFakeClone(o1);
                 } catch (FakeCloneException e) {
                     exampleFailure = e;
                     collectionCloneFailed = true;
@@ -33,13 +56,12 @@ public class FakeCloner {
             }, emptyconst);
         }
         if (o instanceof Duck) {
-            return new Duck((fakeClone(((Duck) o).notADuck)));
+            return new Duck((maybeFakeClone(((Duck) o).notADuck)));
         }
         HashMap<Field, Object> props = stealprops(o);
         if (isImmutable(props, o.getClass().getName())) return o;
         if (emptyconst == null) emptyconst = getEmptyConstructor(o);
         return forceProps(props, emptyconst);
-
     }
 
     public static HashMap<Field, Object> stealprops(Object obj) throws FakeCloneException {
@@ -68,7 +90,7 @@ public class FakeCloner {
         while (itr.hasNext()) {
             entry = itr.next();
             try {
-                entry.getKey().set(clone, fakeClone(entry.getValue()));
+                entry.getKey().set(clone, maybeFakeClone(entry.getValue()));
             } catch (IllegalAccessException e) {
                 throw new FakeCloneException("While forcing props, could not set property in: " + maker.getName(), e);
             }

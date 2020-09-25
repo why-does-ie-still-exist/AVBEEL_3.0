@@ -23,7 +23,7 @@ public class Main {
     public static Scanner bigscanner = new Scanner(System.in);
     public static boolean replisrunning;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         FakeCloner.disableWarning();
         lexerInitialize();
         if (args.length == 0) {

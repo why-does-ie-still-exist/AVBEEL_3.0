@@ -6,6 +6,8 @@ import com.company.Ducks.DuckBool;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import static com.company.FakeCloner.maybeFakeClone;
+
 public class IfElseDuck {
     public final Pattern pattern = Pattern.compile("ifl[\\s]+[(]([^()]+)[)][\\s]+[(]([^()]+)[)][\\s]+else[\\s]+[(]([^()]+)[)]");
     private final String condition;
@@ -41,19 +43,19 @@ public class IfElseDuck {
         if (!this.initialized) initialize();
         input.remove(0);
         if (evaluateCond()) {
-            ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedtruebody);
+            ArrayList<Duck> workspace = new ArrayList<Duck>(maybeFakeClone(parsedtruebody));
             workspace = IdentifierUtil.resolveIdentifiers(workspace);
-            input.addAll(0, Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(workspace)));
+            input.addAll(0, Interpreter.interpret(workspace));
         } else {
-            ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedfalsebody);
+            ArrayList<Duck> workspace = new ArrayList<Duck>(maybeFakeClone(parsedfalsebody));
             workspace = IdentifierUtil.resolveIdentifiers(workspace);
-            input.addAll(0, Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(workspace)));
+            input.addAll(0, Interpreter.interpret(workspace));
         }
         return input;
     }
 
     private boolean evaluateCond() throws FakeCloneException {
-        ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedcond);
+        ArrayList<Duck> workspace = new ArrayList<Duck>(maybeFakeClone(parsedcond));
         workspace = IdentifierUtil.resolveIdentifiers(workspace);
         ArrayList<Duck> clones = Interpreter.interpret(workspace);
         Duck first = clones.get(0);

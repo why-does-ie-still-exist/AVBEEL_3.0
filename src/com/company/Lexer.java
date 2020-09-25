@@ -33,6 +33,12 @@ public class Lexer {
         } else if (converter == null) {
             converter = globalalphastore.get(s);
         }
+        if (staticiscustomstore && converter == null) {
+            var custom = staticcustomstore.get(s);
+            if (custom != null) {
+                return custom;
+            }
+        }
         if (converter == null) {
             Duck nemrequest = globaldefs.get(s);
             if (nemrequest != null) {
@@ -45,12 +51,6 @@ public class Lexer {
             ) {
                 matcher = enu.getPattern().matcher(s);
                 if (matcher.matches()) converter = enu.getConverter();
-            }
-        }
-        if (staticiscustomstore && converter == null) {
-            var custom = staticcustomstore.get(s);
-            if (custom != null) {
-                return custom;
             }
         }
         if (converter == null) {

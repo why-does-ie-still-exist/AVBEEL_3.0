@@ -6,6 +6,8 @@ import com.company.Ducks.DuckBool;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import static com.company.FakeCloner.maybeFakeClone;
+
 public class IfDuck {
     public final Pattern pattern = Pattern.compile("if[\\s]+[(]([^()]+)[)][\\s]+[(]([^()]+)[)]");
     private final String condition;
@@ -36,15 +38,15 @@ public class IfDuck {
         if (!this.initialized) initialize();
         input.remove(0);
         if (evaluateCond()) {
-            ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedbody);
+            ArrayList<Duck> workspace = new ArrayList<Duck>(maybeFakeClone(parsedbody));
             workspace = IdentifierUtil.resolveIdentifiers(workspace);
-            input.addAll(0, Interpreter.interpret((ArrayList<Duck>) FakeCloner.fakeClone(workspace)));
+            input.addAll(0, Interpreter.interpret(workspace));
         }
         return input;
     }
 
     private boolean evaluateCond() throws FakeCloneException {
-        ArrayList<Duck> workspace = (ArrayList<Duck>) FakeCloner.fakeClone(parsedcond);
+        ArrayList<Duck> workspace = new ArrayList<Duck>(maybeFakeClone(parsedcond));
         workspace = IdentifierUtil.resolveIdentifiers(workspace);
         ArrayList<Duck> clones = Interpreter.interpret(workspace);
         Duck first = clones.get(0);
