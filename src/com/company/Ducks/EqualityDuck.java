@@ -25,6 +25,6 @@ public class EqualityDuck {
     }
 
     public String value() {
-        return "display";
+        return "=";
     }
 }

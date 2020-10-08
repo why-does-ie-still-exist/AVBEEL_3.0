@@ -21,6 +21,6 @@ public class Times {
     }
 
     public String value() {
-        return "+";
+        return "*";
     }
 }

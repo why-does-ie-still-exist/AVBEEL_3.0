@@ -17,5 +17,5 @@ define fibonacci (n) (ifl (< n 3) (1) else ( actualfibonacci fibargs n));
 
 display fibonacci 2;
 
-display fibonacci 8
+display fibonacci 8;
 

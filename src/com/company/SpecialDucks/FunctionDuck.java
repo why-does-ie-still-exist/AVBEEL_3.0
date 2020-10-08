@@ -37,8 +37,7 @@ public class FunctionDuck {
     private void initialize() {
         this.isInitialized = true;
         Duck idduck;
-        for (String arg :
-                this.strarguments) {
+        for (String arg : this.strarguments) {
             idduck = new Duck(new IdentifierDuck(arg));
             Main.identifiers.put(arg, idduck);
         }

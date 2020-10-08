@@ -21,6 +21,6 @@ public class Minus {
     }
 
     public String value() {
-        return "+";
+        return "-";
     }
 }

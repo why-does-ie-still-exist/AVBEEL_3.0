@@ -21,6 +21,6 @@ public class Divide {
     }
 
     public String value() {
-        return "+";
+        return "/";
     }
 }
