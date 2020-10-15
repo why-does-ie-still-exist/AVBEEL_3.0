@@ -10,10 +10,10 @@ public class Duck {
 
     public final Class<?> notADuckType;
     public final Object notADuck;
+    public final boolean isCloneIdentifier;
     private Method applydel;
     private boolean simple;
     private Method valuedel;
-    public final boolean isCloneIdentifier;
 
     public Duck(Object notADuck) {
         this.isCloneIdentifier = notADuck instanceof MaybeCloneDuck;

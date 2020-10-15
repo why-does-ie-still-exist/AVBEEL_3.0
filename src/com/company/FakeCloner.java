@@ -18,16 +18,16 @@ public class FakeCloner {
     @SuppressWarnings("unchecked")
     public static ArrayList<Duck> maybeFakeClone(ArrayList<Duck> ducks) throws FakeCloneException {
         boolean found = false;
-        for(int i = 0; i < ducks.size(); i++){
-            if(ducks.get(i).isCloneIdentifier){
+        for (int i = 0; i < ducks.size(); i++) {
+            if (ducks.get(i).isCloneIdentifier) {
                 found = true;
                 ducks.remove(i);
             }
         }
-        if(! found) return ducks;
+        if (!found) return ducks;
         collectionCloneFailed = false;
         Constructor emptyconst = getEmptyConstructor(ducks);
-        return (ArrayList<Duck>) collectionSafeReplace((Collection) ducks, o1 -> {
+        return (ArrayList<Duck>) collectionSafeReplace(ducks, o1 -> {
             try {
                 return maybeFakeClone(o1);
             } catch (FakeCloneException e) {

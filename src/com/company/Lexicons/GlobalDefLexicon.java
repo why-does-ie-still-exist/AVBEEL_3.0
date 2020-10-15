@@ -14,7 +14,9 @@ public enum GlobalDefLexicon {
     IfStatement(Pattern.compile("if[\\s]+[(][^()]+[)][\\s]+[(][^()]+[)]"),
             s -> new Duck(new IfDuck(s)), true),
     SetDuck(Pattern.compile("set\\s+[^\\s()]+\\s+[(][^()]*[)]"),
-            s -> new Duck(new SetDuck(s)), false);
+            s -> new Duck(new SetDuck(s)), false),
+    ScriptDuck(Pattern.compile("py\\s+[(][^()]+[)]"),
+            s -> new Duck(new ScriptDuck(s)), true);
 
     private final Pattern pattern;
     private final Function<String, Duck> initializer;
