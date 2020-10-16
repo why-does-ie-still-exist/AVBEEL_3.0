@@ -50,7 +50,7 @@ public class Main {
 
     public static void doREPL() {
         System.out.println("AVBEEL 3.0 REPL");
-        System.out.println("Type \"exit\" to quit or \"reset\" to clear functions");
+        System.out.println("Type \"exit\" to quit, \"reset\" to clear functions, or \"pwd\" to get the pwd");
         Lexer l = new Lexer();
         replisrunning = true;
         while (replisrunning) {
@@ -70,6 +70,9 @@ public class Main {
                 break;
             case "reset":
                 reset();
+                break;
+            case "pwd":
+                System.out.println("Working Directory = " + System.getProperty("user.dir")); //thanks https://stackoverflow.com/questions/4871051/how-to-get-the-current-working-directory-in-java
                 break;
             default:
                 try {
