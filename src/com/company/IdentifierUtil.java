@@ -6,14 +6,14 @@ import java.util.ArrayList;
 
 public class IdentifierUtil {
     public static ArrayList<Duck> resolveIdentifiers(ArrayList<Duck> workspace) {
-        Duck value;
+        Duck duck;
         String id;
         for (int i = 0; i < workspace.size(); i++) {
-            value = workspace.get(i);
-            if (value.notADuck instanceof IdentifierDuck) {
-                id = (String) value.value();
+            duck = workspace.get(i);
+            if (duck.getNotyetduck() instanceof IdentifierDuck) {
+                id = (String) duck.value();
                 workspace.remove(i);
-                IdentifierDuck identifer = (IdentifierDuck) Main.identifiers.get(id).notADuck;
+                IdentifierDuck identifer = (IdentifierDuck) Main.identifiers.get(id).getNotyetduck();
                 workspace.add(i, identifer.resolve());
             }
         }

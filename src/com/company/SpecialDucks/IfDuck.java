@@ -50,7 +50,7 @@ public class IfDuck {
         workspace = IdentifierUtil.resolveIdentifiers(workspace);
         ArrayList<Duck> clones = Interpreter.interpret(workspace);
         Duck first = clones.get(0);
-        if (first.notADuck instanceof DuckBool) {
+        if (first.getNotyetduck() instanceof DuckBool) {
             return (boolean) first.value();
         }
         throw new IllegalArgumentException("Cond did not evaluate to boolean");

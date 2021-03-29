@@ -13,7 +13,6 @@ public class Interpreter {
             result = token.apply(tokens, pos);
             tokens = result.getFirst();
             pos = result.getSecond();
-            currentsize = tokens.size();
         }
         return tokens;
     }

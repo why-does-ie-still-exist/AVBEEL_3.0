@@ -36,7 +36,12 @@ public class ScriptDuck {
     }
 
     public static Process runPyScript(String scriptlocation) throws IOException {
-        return Runtime.getRuntime().exec(new String[]{"python", scriptlocation});
+        if (System.getProperty("os.name").equals("Linux")) {
+            System.out.println("Linux detected");
+            return Runtime.getRuntime().exec(new String[]{"python3", scriptlocation});
+        } else {
+            return Runtime.getRuntime().exec(new String[]{"python", scriptlocation});
+        }
     }
 
     public ArrayList<Duck> simpleapply(ArrayList<Duck> ducks) throws IOException {

@@ -22,6 +22,7 @@ public class Main {
     public static HashMap<String, Duck> identifiers = new HashMap<String, Duck>();
     public static Scanner bigscanner = new Scanner(System.in);
     public static boolean replisrunning;
+    private static long offset = System.currentTimeMillis();
 
     public static void main(String[] args) {
         FakeCloner.disableWarning();
@@ -81,7 +82,7 @@ public class Main {
                     if (doesoutput) {
                         String output = Interpreter.stringify(evaluated);
                         endtime = System.nanoTime();
-                        System.out.println("Time: >" + ((endtime - starttime) / 1000000) + "ms");
+                        System.out.println("Time: <" + ((endtime - starttime) / 1000000) + "ms");
                         System.out.print("Result: ");
                         System.out.println(output);
                     }
@@ -158,5 +159,13 @@ public class Main {
                 }
             }
         }
+    }
+
+    public static int getCurrentTime() {
+        return (int) (System.currentTimeMillis() - offset);
+    }
+
+    public static void setCurrenttime(int timeinms) {
+        offset = System.currentTimeMillis() - timeinms;
     }
 }

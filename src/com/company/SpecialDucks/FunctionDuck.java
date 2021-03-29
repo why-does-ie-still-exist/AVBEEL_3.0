@@ -47,7 +47,7 @@ public class FunctionDuck {
         if (!this.isInitialized) initialize();
         input.remove(0);
         for (int i = 0; i < numargs; i++) {
-            ((IdentifierDuck) Main.identifiers.get((strarguments.get(i))).notADuck).set(input.get(i));
+            ((IdentifierDuck) Main.identifiers.get((strarguments.get(i))).getNotyetduck()).set(input.get(i));
         }
         for (int i = 0; i < numargs; i++) {
             input.remove(0);

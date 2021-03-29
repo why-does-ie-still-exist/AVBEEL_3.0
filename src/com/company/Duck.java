@@ -8,81 +8,88 @@ import java.util.UUID;
 
 public class Duck {
 
-    public final Class<?> notADuckType;
-    public final Object notADuck;
-    public final boolean isCloneIdentifier;
-    private Method applydel;
-    private boolean simple;
-    private Method valuedel;
+    public final Class<?> notyetduckclass;
+    public final boolean iscloneidentifier; //quick hack to improve performance, don't modify this class like I did. If you want to have all your ducks have a special property, use custom objects in value function.
+    private final Object notyetduck;
+    private Method applymethoddelegate;
+    private boolean issimpleapply;
+    private Method valuemethoddelegate;
 
-    public Duck(Object notADuck) {
-        this.isCloneIdentifier = notADuck instanceof MaybeCloneDuck;
-        this.notADuck = notADuck;
-        this.notADuckType = notADuck.getClass();
-        initialize();
+    public Duck(Object notYetDuck) {
+        this.iscloneidentifier = notYetDuck instanceof MaybeCloneDuck;
+        this.notyetduck = notYetDuck;
+        this.notyetduckclass = notYetDuck.getClass();
+        setupmethods();
     }
 
     public Duck() {
-        this.isCloneIdentifier = false;
-        this.notADuck = null;
-        this.notADuckType = null;
+        this.iscloneidentifier = false;
+        this.notyetduck = null;
+        this.notyetduckclass = null;
     }
 
 
-    private void initialize() {
-        this.simple = false;
-        for (Method method : notADuckType.getMethods()) {
+    private void setupmethods() {
+        this.issimpleapply = false;
+        for (Method method : notyetduckclass.getMethods()) {
             switch (method.getName()) {
                 case "apply":
-                    this.applydel = method;
+                    this.applymethoddelegate = method;
                     break;
                 case "simpleapply":
-                    this.simple = true;
-                    this.applydel = method;
+                    this.issimpleapply = true;
+                    this.applymethoddelegate = method;
                     break;
                 case "value":
-                    this.valuedel = method;
+                    this.valuemethoddelegate = method;
                     break;
             }
         }
-        if (this.applydel == null && !this.simple) {
-            throw new IllegalArgumentException(new StringBuilder("Both apply and simpleapply missing for: ").append(notADuckType.getName()).toString());
+        if (this.applymethoddelegate == null && !this.issimpleapply) {
+            throw new IllegalArgumentException(new StringBuilder("Both apply and simpleapply missing for: ").append(notyetduckclass.getName()).toString());
         }
     }
 
 
     public Pair<ArrayList<Duck>, Integer> apply(ArrayList<Duck> args, Integer pos) {
         try {
-            if (!this.simple) {
-                return (Pair<ArrayList<Duck>, Integer>) this.applydel.invoke(this.notADuck, args, pos);
+            if (!this.issimpleapply) {
+                return (Pair<ArrayList<Duck>, Integer>) this.applymethoddelegate.invoke(this.notyetduck, args, pos);
             }
             var subargs = new ArrayList<Duck>(args.subList(pos, args.size()));
-            var processed = (ArrayList<Duck>) this.applydel.invoke(this.notADuck, subargs);
+            var processed = (ArrayList<Duck>) this.applymethoddelegate.invoke(this.notyetduck, subargs);
             processed.addAll(0, args.subList(0, pos));
             return new Pair<ArrayList<Duck>, Integer>(processed, pos);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new IllegalArgumentException(new StringBuilder().append("Issues with apply/simpleapply method in: ").append(notADuckType.getName()).toString());
+        throw new IllegalArgumentException(new StringBuilder().append("Issues with apply/simpleapply method in: ").append(notyetduckclass.getName()).toString());
     }
 
     public Object value() {
-        if (this.valuedel == null) return this.notADuckType.getName() + "@" + UUID.randomUUID();
+        if (this.valuemethoddelegate == null) return this.notyetduckclass.getName() + "@" + UUID.randomUUID();
         try {
-            return this.valuedel.invoke(this.notADuck);
+            return this.valuemethoddelegate.invoke(this.notyetduck);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new IllegalArgumentException(new StringBuilder().append("Issues with value method in: ").append(notADuckType.getName()).toString());
+        throw new IllegalArgumentException(new StringBuilder().append("Issues with value method in: ").append(notyetduckclass.getName()).toString());
     }
 
     public Object getInternalDuck() {
-        return notADuck;
+        return notyetduck;
     }
 
     public Class<?> getInternalDuckType() {
-        return notADuckType;
+        return notyetduckclass;
     }
 
+    public Class<?> getNotyetduckclass() {
+        return notyetduckclass;
+    }
+
+    public Object getNotyetduck() {
+        return notyetduck;
+    }
 }

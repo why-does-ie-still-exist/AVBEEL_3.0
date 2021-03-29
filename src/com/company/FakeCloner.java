@@ -15,32 +15,49 @@ public class FakeCloner {
     public static boolean collectionCloneFailed = false;
     public static FakeCloneException exampleFailure;
 
+    /* A quick aside on cloning:
+    Cloning is possibly necessary because of the way the interpreter/ducks handle objects. For instance, in the case of FunctionDuck every time it re-initializes the same array of ducks
+    every time it is run. This means state is preserved across runs, so for ducks that have internal, modifiable state (none of the default ducks) this could cause unintended effects,
+    so I added the "clone" or "doclone" identifier which allows these objects to be "cloned" with state that is identical to the reference objects, and if these are present a duck can implement
+    this cloning procedure.
+    This is the line that clones the reference objects in FunctionDuck:
+    var workspace = new ArrayList<Duck>(maybeFakeClone(this.parsedbody));
+    If you want to implement cloning in your ducks to deal with state, use these methods.
+
+    Cloning an object relies on one property of an object:
+    It has to have an empty constructor (THIS IS A REQUIREMENT FOR ALL DUCKS)
+
+    You can make cloning your objects faster by making all fields in your object final.
+     */
     @SuppressWarnings("unchecked")
     public static ArrayList<Duck> maybeFakeClone(ArrayList<Duck> ducks) throws FakeCloneException {
         boolean found = false;
         for (int i = 0; i < ducks.size(); i++) {
-            if (ducks.get(i).isCloneIdentifier) {
+            if (ducks.get(i).iscloneidentifier) {
                 found = true;
-                ducks.remove(i);
             }
         }
-        if (!found) return ducks;
-        collectionCloneFailed = false;
-        Constructor emptyconst = getEmptyConstructor(ducks);
+        if (!found)
+            return ducks; //checks if a clone identifier is present, which will continue the inefficient process of cloning.
+        collectionCloneFailed = false; //important to reset because it's static
+        Constructor zeroargconstructor = getEmptyConstructor(ducks);
         return (ArrayList<Duck>) collectionSafeReplace(ducks, o1 -> {
             try {
                 return maybeFakeClone(o1);
             } catch (FakeCloneException e) {
                 exampleFailure = e;
+                /*If even one clone fails, the clone shouldn't be treated as intact, so we only need the first "example" failure.
+                This is designed this way because I'm using lambdas, and when running them in parallel it's hard to stop all of them when just one fails because
+                it would require communication between threads */
                 collectionCloneFailed = true;
             }
             return null;
-        }, emptyconst);
+        }, zeroargconstructor);
     }
 
     public static Object maybeFakeClone(Object o) throws FakeCloneException {
         if (o == null) return null;
-        if (isBoxed(o) || isString(o) || isSpecialCase(o)) return o;
+        if (isBoxed(o) || isString(o) || isSpecialCase(o)) return o; //
         Constructor emptyconst = null;
         if (o instanceof Collection) {
             collectionCloneFailed = false;
@@ -56,7 +73,7 @@ public class FakeCloner {
             }, emptyconst);
         }
         if (o instanceof Duck) {
-            return new Duck((maybeFakeClone(((Duck) o).notADuck)));
+            return new Duck((maybeFakeClone(((Duck) o).getNotyetduck())));
         }
         HashMap<Field, Object> props = stealprops(o);
         if (isImmutable(props, o.getClass().getName())) return o;
@@ -111,7 +128,7 @@ public class FakeCloner {
         return maker;
     }
 
-    public static boolean isBoxed(Object obj) {
+    public static boolean isBoxed(Object obj) { //You don't need to clone boxed primitives because of the way the JVM treats them. I think.
         return obj instanceof Integer || obj instanceof Boolean
                 || obj instanceof Byte || obj instanceof Character
                 || obj instanceof Float || obj instanceof Long
@@ -119,10 +136,13 @@ public class FakeCloner {
     }
 
     public static boolean isSpecialCase(Object obj) {
+        /* special cases: If an object's class has no empty constructor, it can't be cloned. Any classes used should have an empty constructor or be
+        explicitly ignored here.*/
         return obj instanceof Pattern;
     }
 
     public static boolean isString(Object obj) {
+        //This could be generalized to more immutable objects, but for now it's just isString. A string can be duplicated without cloning it because it's immutable.
         return obj instanceof String;
     }
 
@@ -159,17 +179,17 @@ public class FakeCloner {
         }
     }
 
-    public static Collection collectionSafeReplace(Collection collection, Function<Object, Object> function, Constructor<Collection> c) throws FakeCloneException {
-        ArrayList modList = (ArrayList) collection.parallelStream().map(function::apply).collect(Collectors.toList());
+    public static Collection collectionSafeReplace(Collection collection, Function<Object, Object> lambdacloner, Constructor<Collection> constructorfromsource) throws FakeCloneException {
+        ArrayList clonedList = (ArrayList) collection.parallelStream().map(lambdacloner::apply).collect(Collectors.toList());
         if (collectionCloneFailed)
             throw new FakeCloneException("A collection was detected by fakeClone, but at least one of its items failed to fakeClone.", exampleFailure);
         Collection emptycoll = null;
         try {
-            emptycoll = c.newInstance();
+            emptycoll = constructorfromsource.newInstance();
         } catch (Exception e) {
             throw new FakeCloneException("Some stuff happened while trying to construct: " + collection.getClass().getName(), e);
         }
-        emptycoll.addAll(modList);
+        emptycoll.addAll(clonedList);
         return emptycoll;
     }
 }
