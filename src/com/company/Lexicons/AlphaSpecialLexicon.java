@@ -20,6 +20,7 @@ public enum AlphaSpecialLexicon {
     Equals(new String[]{"==", "=", "eq", "equals"}, (String s) -> (new Duck(new EqualityDuck()))),
     Not(new String[]{"!", "not"}, (String s) -> (new Duck(new NotDuck()))),
     Or(new String[]{"or", "||"}, (String s) -> new Duck(new OrDuck())),
+    And(new String[]{"and", "&&"}, (String s) -> new Duck(new AndDuck())),
     Comparator(new String[]{">", "<"}, (String s) -> new Duck(new DuckComparator(s.equals(">")))),
     REPL(new String[]{"replinput"}, (String s) -> new Duck(new REPLDuck())),
     CloneIdentifier(new String[]{"clone", "doclone"}, s -> new Duck(new MaybeCloneDuck())),
