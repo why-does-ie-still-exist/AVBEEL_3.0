@@ -10,7 +10,7 @@ With new fetaures such as:
 - Recursion!
 - Lists! (Maybe?)
 - Slow runtimes! (*I'm using java reflection alright, you can't expect it to be that fast*)
-- Documentation (*Coming Soon™, perpetually*)
+- [Documentation](https://github.com/why-does-ie-still-exist/AVBEEL_3.0/wiki) (*Coming Soon™, perpetually*)
 
 ### How to Run
 *This project uses Java 11*
@@ -35,3 +35,5 @@ true
 `true` is the result from checking whether 73 is odd,
 `1` is the second fibonacci number, and
 `21` is the eighth fibonacci number.
+
+*Check out our [wiki](https://github.com/why-does-ie-still-exist/AVBEEL_3.0/wiki)*
